@@ -5,7 +5,7 @@ const issueSchema = new Schema({
   IssueId: {
     type: Number,
     allownull: false,
-    required: true, // TODO-AUTO
+    required: false, // TODO-AUTO
   },
   IssueType: {
     type: String,

@@ -1,16 +1,14 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import logger from "morgan";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import swaggerOptions from "./swagger.js";
+import swaggerOptions from "./config/swagger.js";
 import createError from "http-errors";
 import customenv from "custom-env";
 import issueRouter from "./routes/issue.js";
 
 customenv.env(process.env.NODE_ENV);
 const app = express();
-app.use(logger(process.env.Log_Level));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

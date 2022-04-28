@@ -1,5 +1,5 @@
 import { issueModel } from "../models/issue.js";
-
+import logger from "../config/logger.js";
 /**
  * @openapi
  * /issues:
@@ -36,12 +36,15 @@ export const getIssues = async (req, res) => {
     if (type) {
       queryParam.IssueType = type;
     }
+    logger.info("queryParam " + queryParam);
     const data = await issueModel.find(queryParam);
+    logger.info("data length " + data.length);
     res.json({
       success: true,
       data,
     });
   } catch (e) {
+    logger.error("Error in getIssues", e);
     res.status(500).json({
       success: false,
       msg: `Internal server error`,
@@ -49,28 +52,80 @@ export const getIssues = async (req, res) => {
   }
 };
 
+const normalizeIssueId = (val) => {
+  let issueId = parseInt(val, 10);
+  if (isNaN(issueId)) {
+    return false;
+  }
 
-export const getIssueById = (req, res) => {
-  /*  try {
-    const { project, type } = req.query;
-    const queryParam = {};
-    if (project) {
-      queryParam.Project = project;
+  if (issueId > 0) {
+    // port number
+    return issueId;
+  }
+
+  return false;
+};
+
+/**
+ * @openapi
+ * /issue/:id:
+ *  get:
+ *    tags:
+ *    - Issues
+ *    description: Responds with the issue based on IssueID
+ *    parameters:
+ *     - name: id
+ *       in: path
+ *       description: ID of the Issue
+ *       required: true
+ *    responses:
+ *      200:
+ *        description: Success
+ *        content:
+ *          application/json:
+ *            schema:
+ *                $ref: '#/components/schemas/Issue'
+ *      404:
+ *        description: Issue not found when ID is incorrect or Issue is deleted
+ */
+export const getIssueById = async (req, res) => {
+  try {
+    let { id: IssueId } = req.params;
+    IssueId = normalizeIssueId(IssueId);
+    logger.info("IssueId " + IssueId);
+    if (IssueId) {
+      const data = await issueModel.findOne({ IssueId });
+      if (data && data.IssueId) {
+        logger.info("data " + IssueId);
+        res.json({
+          success: true,
+          data,
+        });
+      } else {
+        logger.error("Issue not found");
+        res.status(404).json({
+          success: false,
+          data: {
+            mssg: "data not found",
+          },
+        });
+      }
+    } else {
+      logger.error("ID not sent as valid number in getIssueById");
+      res.status(404).json({
+        success: false,
+        data: {
+          mssg: "Issue ID is not a valid number",
+        },
+      });
     }
-    if (type) {
-      queryParam.IssueType = type;
-    }
-    const data = await issueModel.find(queryParam);
-    res.json({
-      success: true,
-      data,
-    });
   } catch (e) {
+    logger.error("Error in getIssueById " + e);
     res.status(500).json({
       success: false,
       msg: `Internal server error`,
     });
-  } */
+  }
 };
 
 /*

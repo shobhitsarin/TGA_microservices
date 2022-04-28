@@ -4,13 +4,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "npx eslint --fix",
+    "lint": "npm run eslint",
+    "lint:fix": "npm run eslint --fix",
     "format": "prettier --write '**/*.{,js,css,md}'",
     "transpile": "babel-node -e js",
     "test": "jest --runInBand ./*.test.js",
     "lint-format": "npm run lint && npm run format",
     "start-dev": "npm run lint-format && npx cross-env NODE_ENV=development nodemon ./bin/www.js",
     "start-prod": "npm run lint-format && npx cross-env NODE_ENV=production node ./bin/www.js"
+    
+  },
+   "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx}": "npm run lint:fix"
   },
   "jest": {
     "testEnvironment": "node"
@@ -25,7 +35,8 @@
     "http-errors": "~1.6.3",
     "mongodb": "^4.2.2",
     "mongoose": "^6.1.2",
-    "morgan": "~1.9.1"
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
@@ -36,14 +47,15 @@
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^7.0.4",
     "jest": "^28.0.2",
+    "lint-staged": "^12.4.1",
     "mongodb-memory-server": "^8.5.1",
+    "mongoose-to-swagger": "^1.4.0",
     "nodemon": "^2.0.3",
     "prettier": "^2.0.4",
     "supertest": "^6.2.2",
     "swagger-jsdoc": "^6.1.0",
-    "swagger-ui-express": "^4.3.0",
-    "mongoose-to-swagger": "^1.4.0"
-
+    "swagger-ui-express": "^4.3.0"
   }
 }

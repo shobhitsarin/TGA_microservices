@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 import { MongoMemoryServer } from "mongodb-memory-server";
+import logger from "../config/logger.js";
 
 let mongod;
 
@@ -15,7 +16,7 @@ module.exports.connect = async () => {
   try {
     await mongoose.connect(uri, mongooseOpts);
   } catch (e) {
-    console.log(e);
+    logger.error(e);
   }
 };
 

@@ -297,7 +297,6 @@
         "no-unneeded-ternary": "error",
         "one-var-declaration-per-line": "error",
         "operator-assignment": ["error", "always"],
-        "operator-linebreak": ["error", "after"],
         "quote-props": ["error", "as-needed"],
         "semi-spacing": [
             "error",
