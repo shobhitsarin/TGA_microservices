@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../app.js";
+import app from "../src/app.js";
 import {
   issueDataList,
   issueData12,
@@ -24,7 +24,7 @@ describe("GET Issues", () => {
     expect(data.length).toBe(3);
   });
 
-  test("It should respond all the issues without project filter", async () => {
+  test("It should respond all the issues with project filter", async () => {
     const response = await request(app).get("/issues?project=TGA");
     const {
       statusCode,
@@ -36,7 +36,7 @@ describe("GET Issues", () => {
     expect(data[1]).toMatchObject(issueData13);
   });
 
-  test("It should respond all the issues without Type filter", async () => {
+  test("It should respond all the issues with Type filter", async () => {
     const response = await request(app).get("/issues?type=Story");
     const {
       statusCode,
@@ -107,6 +107,8 @@ describe("GET Issue by ID", () => {
       body: { data },
     } = response;
     expect(statusCode).toBe(404);
+    expect(data.mssg).toBe("Data not found");
+
   });
 
   test("It should respond the 404 if issueID is not a valid number", async () => {
@@ -116,5 +118,6 @@ describe("GET Issue by ID", () => {
       body: { data },
     } = response;
     expect(statusCode).toBe(404);
+    expect(data.mssg).toBe("Issue ID is not a valid number");
   });
 });

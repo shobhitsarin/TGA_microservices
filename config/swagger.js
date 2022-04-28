@@ -1,4 +1,4 @@
-import { swaggerIssueSchema } from "../models/issue.js";
+import { swaggerIssueSchema } from "../src/models/issue.js";
 
 export default {
   definition: {
@@ -22,5 +22,5 @@ export default {
       schemas: swaggerIssueSchema,
     },
   },
-  apis: ["./controller/*.js"],
+  apis: ["./src/controller/*.js"],
 };

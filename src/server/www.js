@@ -8,7 +8,7 @@ import app from "../app.js";
 import debugLib from "debug";
 import http from "http";
 import mongoose from "mongoose";
-import logger from "../config/logger.js";
+import logger from "../../utils/logger.js";
 
 const debug = debugLib("shobhit-microservice:server");
 

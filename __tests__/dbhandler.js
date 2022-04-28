@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 import { MongoMemoryServer } from "mongodb-memory-server";
-import logger from "../config/logger.js";
+import logger from "../utils/logger.js";
 
 let mongod;
 

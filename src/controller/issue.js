@@ -1,5 +1,5 @@
 import { issueModel } from "../models/issue.js";
-import logger from "../config/logger.js";
+import logger from "../../utils/logger.js";
 /**
  * @openapi
  * /issues:
@@ -68,7 +68,7 @@ const normalizeIssueId = (val) => {
 
 /**
  * @openapi
- * /issue/:id:
+ * /issue/{id}:
  *  get:
  *    tags:
  *    - Issues
@@ -106,7 +106,7 @@ export const getIssueById = async (req, res) => {
         res.status(404).json({
           success: false,
           data: {
-            mssg: "data not found",
+            mssg: "Data not found",
           },
         });
       }
