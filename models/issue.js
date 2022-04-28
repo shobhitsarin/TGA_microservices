@@ -1,6 +1,7 @@
 import pkg from "mongoose";
-const { Schema } = pkg;
-export const issueSchema = new Schema({
+import m2s from "mongoose-to-swagger";
+const { Schema, mongoose } = pkg;
+const issueSchema = new Schema({
   IssueId: {
     type: Number,
     allownull: false,
@@ -47,3 +48,9 @@ export const issueSchema = new Schema({
     required: true,
   },
 });
+
+export const issueModel = mongoose.model("issues", issueSchema);
+
+export const swaggerIssueSchema = {
+  Issue: m2s(issueModel),
+};

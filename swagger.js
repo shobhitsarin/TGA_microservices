@@ -1,3 +1,5 @@
+import { swaggerIssueSchema } from "./models/issue.js";
+
 export default {
   definition: {
     openapi: "3.0.0",
@@ -13,9 +15,12 @@ export default {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: `http://localhost:3000`,
       },
     ],
+    components: {
+      schemas: swaggerIssueSchema,
+    },
   },
-  apis: ["./src/routes/*.js"],
+  apis: ["./controller/*.js"],
 };
