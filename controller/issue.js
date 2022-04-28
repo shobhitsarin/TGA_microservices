@@ -120,7 +120,7 @@ export const getIssueById = async (req, res) => {
       });
     }
   } catch (e) {
-    logger.error("Error in getIssueById " + e);
+    logger.error("Error in getIssueById "+ e);
     res.status(500).json({
       success: false,
       msg: `Internal server error`,
