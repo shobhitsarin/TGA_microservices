@@ -1,12 +1,9 @@
 import pkg from "mongoose";
 import m2s from "mongoose-to-swagger";
+import msequence from "mongoose-sequence";
 const { Schema, mongoose } = pkg;
+const AutoIncrement = msequence(mongoose);
 const issueSchema = new Schema({
-  IssueId: {
-    type: Number,
-    allownull: false,
-    required: false, // TODO-AUTO
-  },
   IssueType: {
     type: String,
     allownull: false,
@@ -14,6 +11,11 @@ const issueSchema = new Schema({
     enum: ["Defect", "Story", "Change Request"],
   },
   Title: {
+    type: String,
+    allownull: false,
+    required: true,
+  },
+  Description: {
     type: String,
     allownull: false,
     required: true,
@@ -49,8 +51,8 @@ const issueSchema = new Schema({
   },
 });
 
+issueSchema.plugin(AutoIncrement, { inc_field: "IssueId" });
 export const issueModel = mongoose.model("issues", issueSchema);
-
 export const swaggerIssueSchema = {
   Issue: m2s(issueModel),
 };

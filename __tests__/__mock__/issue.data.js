@@ -38,4 +38,15 @@ export const issueData14 = {
   isActive: true,
 };
 
+export const newIssueData = {
+  IssueType: "Story",
+  Title: "New Setup K8 for IKEA",
+  Description: "New Need to setup K8 for IKEA",
+  Project: "IKEA",
+  AssignedTo: "Mahesh",
+  CreatedBy: "Shobhit",
+  Status: "In Progress",
+  isActive: true,
+};
+
 export const issueDataList = [issueData12, issueData13, issueData14];
