@@ -8,16 +8,17 @@
     "lint:fix": "npm run lint --fix",
     "format": "prettier --write '**/*.{,js,css,md}'",
     "transpile": "babel-node -e js",
-    "test": "jest --runInBand ./*.test.js",
+    "test": "jest --runInBand ./*.test.js --coverage",
     "lint-format": "npm run lint && npm run format",
     "start-dev": "npm run lint-format && npx cross-env NODE_ENV=development nodemon ./src/server/www.js",
-    "start-prod": "npm run lint-format && npx cross-env NODE_ENV=production node ./src/server/www.js"
+    "start-prod": "npx cross-env NODE_ENV=production node ./src/server/www.js"
   },
   "lint-staged": {
     "*.{js,jsx}": "npm run lint:fix"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": ["./src/config","./src/utils"]
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -31,7 +32,11 @@
     "mongoose": "^6.1.2",
     "mongoose-sequence": "^5.3.1",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.1"
+    "winston-daily-rotate-file": "^4.5.1",
+        "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.3.0",
+        "mongoose-to-swagger": "^1.4.0"
+
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
@@ -46,11 +51,8 @@
     "jest": "^28.0.2",
     "lint-staged": "^12.4.1",
     "mongodb-memory-server": "^8.5.1",
-    "mongoose-to-swagger": "^1.4.0",
     "nodemon": "^2.0.3",
     "prettier": "^2.0.4",
-    "supertest": "^6.2.2",
-    "swagger-jsdoc": "^6.1.0",
-    "swagger-ui-express": "^4.3.0"
+    "supertest": "^6.2.2"
   }
 }

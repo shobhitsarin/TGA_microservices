@@ -24,7 +24,7 @@ export const errorCodes = {
     },
     ISSUE_DATA_MISSING: {
       errCode: 3400,
-      errMsg: "Issue DATA is missing required fields",
+      errMsg: "Issue DATA is not a correct json or missing required fields",
     },
     ISSUE_DATA_CONFLICT: {
       errCode: 3409,

@@ -2,12 +2,13 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import swaggerOptions from "../config/swagger.js";
+import swaggerOptions from "./config/swagger.js";
 import createError from "http-errors";
 import customenv from "custom-env";
 import issueRouter from "./routes/issue.js";
-
-customenv.env(process.env.NODE_ENV);
+customenv.env(
+  process.env.NODE_ENV === "test" ? "development" : process.env.NODE_ENV
+);
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -1,6 +1,6 @@
 import { issueModel } from "../models/issue.js";
-import logger from "../../utils/logger.js";
-import { errorCodes } from "../../config/error.js";
+import logger from "../utils/logger.js";
+import { errorCodes } from "../config/error.js";
 const { ISSUE: issueErr } = errorCodes;
 /**
  * @openapi
@@ -248,7 +248,6 @@ export const updateIssue = async (req, res) => {
   try {
     const { body: issueData, params } = req;
     let { id: IssueId } = params;
-    const { _id } = issueData;
     delete issueData["CreatedAt"];
     delete issueData["_id"];
     delete issueData["IssueId"];
@@ -268,9 +267,76 @@ export const updateIssue = async (req, res) => {
       {
         IssueId,
       },
-      { ...issueData }
+      issueData
     );
     if (data) {
+      res.status(204).send();
+    } else {
+      const { errCode, errMsg } = issueErr.ISSUE_ID_NOT_FOUND;
+
+      logger.error("Incorrect Issue ID to be updated ");
+      res.status(404).json({
+        success: false,
+        errCode,
+        errMsg,
+      });
+    }
+  } catch (e) {
+    logger.error("Caught Error in updating issue " + e);
+
+    const { errCode, errMsg } = issueErr.INTERNAL_SERVER_ERROR;
+
+    res.status(500).json({
+      success: false,
+      errCode,
+      errMsg,
+    });
+  }
+};
+
+/**
+ * @openapi
+ * /issue/{id}:
+ *  delete:
+ *    tags:
+ *    - Issues
+ *    description: Deletes an existing Issue
+ *    parameters:
+ *     - name: id
+ *       in: path
+ *       description: ID of the Issue
+ *       required: true
+ *    responses:
+ *      204:
+ *        description: Updated Successfully
+ *      400:
+ *        description: Bad Request when invalid id of issue  errCode:3400
+ *      404:
+ *        description: Issue not found when ID is incorrect  errCode:2404
+ *      500:
+ *        description: Internal Server Error, errCode:1500
+ */
+export const deleteIssue = async (req, res) => {
+  try {
+    const {
+      params: { id },
+    } = req;
+    const IssueId = normalizeIssueId(id);
+    if (!IssueId) {
+      logger.error("ID not sent as valid number in updateIssue");
+      const { errCode, errMsg } = issueErr.ISSUE_ID_NOT_VALID;
+      res.status(400).json({
+        success: false,
+        data: {},
+        errCode,
+        errMsg,
+      });
+      return;
+    }
+    const data = await issueModel.deleteOne({
+      IssueId,
+    });
+    if (data && data.deletedCount) {
       res.status(204).send();
     } else {
       const { errCode, errMsg } = issueErr.ISSUE_ID_NOT_FOUND;

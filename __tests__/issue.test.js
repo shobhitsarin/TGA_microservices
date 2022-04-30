@@ -8,8 +8,7 @@ import {
   newIssueData,
 } from "./__mock__/issue.data.js";
 import db from "./dbhandler.js";
-import { errorCodes } from "../config/error.js";
-import loggerObj from "../utils/logger.js";
+import { errorCodes } from "../src/config/error.js";
 
 const { ISSUE: issueErr } = errorCodes;
 
@@ -184,6 +183,42 @@ describe("Update an existing Issue", () => {
 
   test("It should respond the 400 if issueID is not a valid number", async () => {
     const response = await request(app).put("/issue/abc");
+    const {
+      statusCode,
+      body: { data, errCode },
+    } = response;
+    expect(statusCode).toBe(400);
+    expect(errCode).toBe(issueErr.ISSUE_ID_NOT_VALID.errCode);
+  });
+});
+
+describe("Delete an existing Issue", () => {
+  test("It should delete the issue", async () => {
+    const response = await request(app).delete("/issue/12");
+    const { statusCode } = response;
+    expect(statusCode).toBe(204);
+  });
+  test("It should respond 404 if the issue ID is not provided", async () => {
+    const response = await request(app).delete("/issue/");
+    const {
+      statusCode,
+      body: { data },
+    } = response;
+    expect(statusCode).toBe(404);
+  });
+
+  test("It should respond the 404 if issueID is incorrect or does not exist", async () => {
+    const response = await request(app).delete("/issue/" + 1111);
+    const {
+      statusCode,
+      body: { data, errCode },
+    } = response;
+    expect(statusCode).toBe(404);
+    expect(errCode).toBe(issueErr.ISSUE_ID_NOT_FOUND.errCode);
+  });
+
+  test("It should respond the 400 if issueID is not a valid number", async () => {
+    const response = await request(app).delete("/issue/abc");
     const {
       statusCode,
       body: { data, errCode },

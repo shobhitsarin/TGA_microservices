@@ -1,4 +1,4 @@
-import { swaggerIssueSchema } from "../src/models/issue.js";
+import { swaggerIssueSchema } from "../models/issue.js";
 
 export default {
   definition: {
@@ -13,11 +13,6 @@ export default {
         url: "https://spdx.org/licenses/MIT.html",
       },
     },
-    servers: [
-      {
-        url: `http://localhost:3000`,
-      },
-    ],
     components: {
       schemas: swaggerIssueSchema,
     },
