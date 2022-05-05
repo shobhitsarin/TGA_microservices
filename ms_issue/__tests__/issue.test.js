@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../src/app.js";
+import { issueModel } from "../src/models/issue.js";
 import {
   issueDataList,
   issueData12,
@@ -27,6 +28,18 @@ describe("GET Issues", () => {
     expect(statusCode).toBe(200);
     expect(data.length).toBe(3);
   });
+
+test('should return status 500 when failed to retrieve issues', async () => {
+  const mockFind = jest.spyOn(issueModel, 'find');
+  mockFind.mockRejectedValue(new Error('Failed to retrieve issues')); 
+    const response = await request(app).get("/issues");
+    const {
+      statusCode,
+      body: { data },
+    } = response;
+    expect(statusCode).toBe(500);
+  mockFind.mockRestore(); 
+});
 
   test("It should respond all the issues with project filter", async () => {
     const response = await request(app).get("/issues?project=TGA");
@@ -124,6 +137,28 @@ describe("GET Issue by ID", () => {
     expect(statusCode).toBe(400);
     expect(errCode).toBe(issueErr.ISSUE_ID_NOT_VALID.errCode);
   });
+
+    test("It should respond the 400 if issueID is not a valid number", async () => {
+    const response = await request(app).get("/issue/-12");
+    const {
+      statusCode,
+      body: { data, errCode },
+    } = response;
+    expect(statusCode).toBe(400);
+    expect(errCode).toBe(issueErr.ISSUE_ID_NOT_VALID.errCode);
+  });
+
+  test('should return status 500 when failed to retrieve specific issue', async () => {
+  const mockFind = jest.spyOn(issueModel, 'findOne');
+  mockFind.mockRejectedValue(new Error('Failed to retrieve issue')); 
+    const response = await request(app).get("/issue/12");
+    const {
+      statusCode,
+      body: { data },
+    } = response;
+    expect(statusCode).toBe(500);
+  mockFind.mockRestore(); 
+});
 });
 
 describe("POST a new Issue", () => {
@@ -148,6 +183,19 @@ describe("POST a new Issue", () => {
     expect(statusCode).toBe(400);
     expect(errCode).toBe(issueErr.ISSUE_DATA_MISSING.errCode);
   });
+
+
+  test('should return status 500 when failed to creating issue', async () => {
+  const mockFind = jest.spyOn(issueModel.prototype, 'save');
+    mockFind.mockRejectedValue(new Error('Failed to save issue')); 
+    const response = await request(app).post("/issue/").send(newIssueData);;
+    const {
+      statusCode,
+      body: { data },
+    } = response;
+    expect(statusCode).toBe(500);
+  mockFind.mockRestore(); 
+});
 });
 
 describe("Update an existing Issue", () => {
@@ -162,6 +210,17 @@ describe("Update an existing Issue", () => {
     const { statusCode } = response;
     expect(statusCode).toBe(204);
   });
+
+    test("It should respond the updated issue", async () => {
+    const response = await request(app)
+      .put("/issue/12")
+      .send({
+        ...issueData12,
+      });
+    const { statusCode } = response;
+    expect(statusCode).toBe(204);
+  });
+
   test("It should respond 404 if the issue ID is not provided", async () => {
     const response = await request(app).put("/issue/");
     const {
@@ -182,7 +241,7 @@ describe("Update an existing Issue", () => {
   });
 
   test("It should respond the 400 if issueID is not a valid number", async () => {
-    const response = await request(app).put("/issue/abc");
+    const response = await request(app).put("/issue/abc").send(newIssueData);;
     const {
       statusCode,
       body: { data, errCode },
@@ -190,6 +249,19 @@ describe("Update an existing Issue", () => {
     expect(statusCode).toBe(400);
     expect(errCode).toBe(issueErr.ISSUE_ID_NOT_VALID.errCode);
   });
+
+    test('should return status 500 when failed to update issue', async () => {
+  const mockFind = jest.spyOn(issueModel, 'findOne');
+  mockFind.mockRejectedValue(new Error('Failed to update issue')); 
+    const response = await request(app).put("/issue/12");
+    const {
+      statusCode,
+      body: { data },
+    } = response;
+    expect(statusCode).toBe(500);
+  mockFind.mockRestore(); 
+});
+
 });
 
 describe("Delete an existing Issue", () => {
@@ -226,4 +298,17 @@ describe("Delete an existing Issue", () => {
     expect(statusCode).toBe(400);
     expect(errCode).toBe(issueErr.ISSUE_ID_NOT_VALID.errCode);
   });
+
+      test('should return status 500 when failed to delete issue', async () => {
+  const mockFind = jest.spyOn(issueModel, 'deleteOne');
+  mockFind.mockRejectedValue(new Error('Failed to delete issue')); 
+    const response = await request(app).delete("/issue/12");
+    const {
+      statusCode,
+      body: { data },
+    } = response;
+    expect(statusCode).toBe(500);
+  mockFind.mockRestore(); 
+});
+
 });

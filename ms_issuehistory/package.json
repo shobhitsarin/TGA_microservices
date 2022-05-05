@@ -8,7 +8,7 @@
     "lint:fix": "npm run lint --fix",
     "format": "prettier --write '**/*.{,js,css,md}'",
     "transpile": "babel-node -e js",
-    "test": "jest --runInBand ./*.test.js",
+    "test": "jest --runInBand ./*.test.js --coverage",
     "lint-format": "npm run lint && npm run format",
     "start-dev": "npm run lint-format && npx cross-env NODE_ENV=development nodemon ./src/server/www.js",
     "start-prod": "npx cross-env NODE_ENV=production node ./src/server/www.js"

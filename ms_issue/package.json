@@ -21,6 +21,7 @@
     "testPathIgnorePatterns": ["./src/config","./src/utils"]
   },
   "dependencies": {
+    "node-fetch": "^2.6.7",
     "cookie-parser": "~1.4.4",
     "cross-env": "^7.0.2",
     "custom-env": "^2.0.1",

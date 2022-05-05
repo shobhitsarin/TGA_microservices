@@ -140,7 +140,7 @@ export const createAndUpdateIssueHistory = async (req, res) => {
     if (issueId) {
       const data = await issueHistoryModel.findOneAndUpdate(
         { IssueId },
-        { $push: { Updates: Updates[0] } },
+        { $push: { Updates } },
         { upsert: true }
       );
       res.status(204).send({

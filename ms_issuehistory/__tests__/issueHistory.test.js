@@ -1,5 +1,7 @@
 import request from "supertest";
 import app from "../src/app.js";
+import { issueHistoryModel } from "../src/models/issueHistory.js";
+
 import {
   issueHistoryDataList,
   issueHistory12,
@@ -57,6 +59,28 @@ describe("GET Issue History by ID", () => {
     expect(statusCode).toBe(400);
     expect(errCode).toBe(issueErr.ISSUE_ID_NOT_VALID.errCode);
   });
+
+      test("It should respond the 400 if issueID is not a valid number", async () => {
+    const response = await request(app).get("/issueHistory/-12");
+    const {
+      statusCode,
+      body: { data, errCode },
+    } = response;
+    expect(statusCode).toBe(400);
+    expect(errCode).toBe(issueErr.ISSUE_ID_NOT_VALID.errCode);
+  });
+
+    test('should return status 500 when failed to retrieve specific issue history', async () => {
+  const mockFind = jest.spyOn(issueHistoryModel, 'findOne');
+  mockFind.mockRejectedValue(new Error('Failed to retrieve issue history')); 
+    const response = await request(app).get("/issueHistory/12");
+    const {
+      statusCode,
+      body: { data },
+    } = response;
+    expect(statusCode).toBe(500);
+  mockFind.mockRestore(); 
+});
 });
 
 describe("POST a new IssueHistory", () => {
@@ -99,4 +123,16 @@ describe("PUT history for updated Issue", () => {
     expect(statusCode).toBe(400);
     expect(errCode).toBe(issueErr.ISSUE_ID_NOT_VALID.errCode);
   });
+
+      test('should return status 500 when failed to update specific issue history', async () => {
+  const mockFind = jest.spyOn(issueHistoryModel, 'findOneAndUpdate');
+  mockFind.mockRejectedValue(new Error('Failed to update issue history')); 
+    const response = await request(app).put("/issueHistory").send({ ...newIssueHistoryData, IssueId: 12 });
+    const {
+      statusCode,
+      body: { data },
+    } = response;
+    expect(statusCode).toBe(500);
+  mockFind.mockRestore(); 
+});
 });

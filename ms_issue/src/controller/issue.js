@@ -1,7 +1,63 @@
 import { issueModel } from "../models/issue.js";
 import logger from "../utils/logger.js";
 import { errorCodes } from "../config/error.js";
+import fetch from "node-fetch";
+
 const { ISSUE: issueErr } = errorCodes;
+
+const insertIssueHistoryData = async (IssueId, CreatedBy) => {
+  // These apis are fire and forget - and create/update apis are not waiting for their response, In second iteration plan is to make them async viq kafka
+  try {
+    await fetch(process.env.ISSUE_HISTORY_API, {
+      method: "POST",
+      body: JSON.stringify({
+        IssueId,
+        Updates: [
+          {
+            FieldName: "Issue Created",
+            PrevValue: "",
+            NewValue: "This issue has been created",
+            UpdatedBy: CreatedBy,
+          },
+        ],
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+  } catch (e) {
+    logger.error("insertIssueHistoryData has failed " + e);
+  }
+};
+
+const issueDeletedHistory = [
+  {
+    FieldName: "Issue Deleted",
+    PrevValue: "",
+    NewValue: "This issue has been Deleted",
+    UpdatedBy: "Default user",
+  },
+];
+
+export const updateIssueHistoryData = async (IssueId, Updates) => {
+  // These apis are fire and forget - and create/update apis are not waiting for their response, In second iteration plan is to make them async viq kafka
+  try {
+    await fetch(process.env.ISSUE_HISTORY_API, {
+      method: "PUT",
+      body: JSON.stringify({
+        IssueId,
+        Updates,
+      }),
+      //     body: JSON.stringify({ email: email }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+  } catch (e) {
+    logger.error("updateIssueHistoryData has failed " + e);
+  }
+};
+
 /**
  * @openapi
  * /issues:
@@ -194,13 +250,15 @@ export const createIssue = async (req, res) => {
           errCode,
           errMsg,
         });
-      } else if (data) {
+      } else {
         logger.info("data inserted successfully");
         logger.info(data);
-        res.status(201).json({
-          success: true,
-          data,
-        });
+        const { IssueId, CreatedBy } = data;
+        insertIssueHistoryData(IssueId, CreatedBy);
+          res.status(201).json({
+            success: true,
+            data,
+          });
       }
     });
   } catch (e) {
@@ -263,14 +321,31 @@ export const updateIssue = async (req, res) => {
       });
       return;
     }
-    const data = await issueModel.findOneAndUpdate(
-      {
-        IssueId,
-      },
-      issueData
-    );
-    if (data) {
-      res.status(204).send();
+    const issue = await issueModel.findOne({
+      IssueId,
+    });
+    const updatedHistory = [];
+    if (issue) {
+      for (const key in issueData) {
+        if (issue[key] != issueData[key]) {
+          updatedHistory.push({
+            FieldName: key,
+            PrevValue: issue[key],
+            NewValue: issueData[key],
+            UpdatedBy: issueData["UpdatedBy"] || "Default User",
+          });
+          issue[key] = issueData[key];
+          issue.markModified(key);
+        }
+      }
+      if (updatedHistory.length) {
+        updateIssueHistoryData(IssueId, updatedHistory);
+      } else {
+        logger.info("same issue was sent with no changes")
+      }
+      issue.save(() => {
+          res.status(204).send();
+      });
     } else {
       const { errCode, errMsg } = issueErr.ISSUE_ID_NOT_FOUND;
 
@@ -337,6 +412,7 @@ export const deleteIssue = async (req, res) => {
       IssueId,
     });
     if (data && data.deletedCount) {
+      updateIssueHistoryData(IssueId, issueDeletedHistory);
       res.status(204).send();
     } else {
       const { errCode, errMsg } = issueErr.ISSUE_ID_NOT_FOUND;
