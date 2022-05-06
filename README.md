@@ -40,7 +40,7 @@ In each service folder
 - You can run server in either production mode or in developer environment
 - Env files are picked according to the `NODE_ENV`
 - Each Service uses `Mongo DB` and the domain of DB can be changed via `DB_URI` from respective env file.
-- **For Production mode, Project is using `Mongo Atlas` and connects to respective data base.**
+- **For Production mode, Project is using `Mongo Atlas` and connects to respective database.**
 - Default PORT is 3000 but can be changed in env file `PORT`
 
 ---
@@ -127,7 +127,7 @@ docker pull shobhitsarin/ms_issuehistory
 - use this port in ISSUE_HISTORY_API of issue container
 
 ```
-docker run -p 3002:3000 -e shobhitsarin/ms_issuehistory
+docker run -p 3002:3000 shobhitsarin/ms_issuehistory
 ```
 
 # 6. FAQs
