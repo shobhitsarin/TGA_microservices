@@ -145,3 +145,17 @@ You can generate documentation site by providing details regarding all the endpo
 > ## Logging
 
 Logs can be added via logger function from `utils/logger.js`. Using winston logger for the logging. By default, console logging is enabled and file logging is disabled but this can be changed by using the config.
+
+> ## Husky
+
+Husky is used to prevent any eslint error while committing the code
+
+> ## Custom-env
+
+Custom env is used to set the environmental variables and the respective .env file will get loaded depending on env you set.
+
+> ## mongodb-memory-server
+
+It is a package that spins up a real MongoDB server. It enables us to start a mongod process that stores data in memory.
+In-memory databases are spun up, ran, and closed in the application's main memory itself. Making them fast as they never touch the hard-drive, and are fit for testing as they are destroyed instantly upon closing.
+A config file is created `/config/dbHandler.js` for this.
