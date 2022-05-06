@@ -70,6 +70,26 @@ npm run start-dev
 
 ### Code coverage of `models,routes and controllers` for both the services is `100%`
 
+------------------|---------|----------|---------|---------|-------------------
+File | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+------------------|---------|----------|---------|---------|-------------------
+src/controller | 100 | 100 | 100 | 100 |  
+ issueHistory.js | 100 | 100 | 100 | 100 |  
+ src/models | 100 | 100 | 100 | 100 |  
+ issueHistory.js | 100 | 100 | 100 | 100 |  
+ src/routes | 100 | 100 | 100 | 100 |  
+ issueHistory.js | 100 | 100 | 100 | 100 |
+
+----------------|---------|----------|---------|---------|-------------------
+File | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+----------------|---------|----------|---------|---------|-------------------  
+ src/controller | 100 | 100 | 100 | 100 |  
+ issue.js | 100 | 100 | 100 | 100 |  
+ src/models | 100 | 100 | 100 | 100 |  
+ issue.js | 100 | 100 | 100 | 100 |  
+ src/routes | 100 | 100 | 100 | 100 |  
+ issue.js | 100 | 100 | 100 | 100 |
+
 ---
 
 - Project follows TDD approach
