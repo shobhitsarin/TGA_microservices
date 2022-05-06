@@ -1,0 +1,7 @@
+**/*.yml
+**/*.json
+**/*.md
+**/Dockerfile
+docs/**/*.*
+node_modules
+__tests__

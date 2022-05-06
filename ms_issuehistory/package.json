@@ -1,0 +1,57 @@
+{
+  "name": "shobhit-microservice",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "npx eslint src",
+    "lint:fix": "npm run lint --fix",
+    "format": "prettier --write '**/*.{,js,css,md}'",
+    "transpile": "babel-node -e js",
+    "test": "jest --runInBand ./*.test.js --coverage",
+    "lint-format": "npm run lint && npm run format",
+    "start-dev": "npm run lint-format && npx cross-env NODE_ENV=development nodemon ./src/server/www.js",
+    "start-prod": "npx cross-env NODE_ENV=production node ./src/server/www.js"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": "npm run lint:fix"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": ["./src/config","./src/utils"]
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "cross-env": "^7.0.2",
+    "custom-env": "^2.0.1",
+    "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "mongodb": "^4.2.2",
+    "mongoose": "^6.1.2",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.1",
+        "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.3.0",
+        "mongoose-to-swagger": "^1.4.0"
+
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.8",
+    "@babel/node": "^7.16.8",
+    "@babel/preset-env": "^7.16.11",
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^7.0.4",
+    "jest": "^28.0.2",
+    "lint-staged": "^12.4.1",
+    "mongodb-memory-server": "^8.5.1",
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.4",
+    "supertest": "^6.2.2"
+  }
+}
