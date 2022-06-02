@@ -1,0 +1,17 @@
+version: '3'
+services:
+  ms_issuehistory:
+    image: shobhitsarin/ms_issuehistory
+    ports:
+    - 3002:3000
+  ms_issue:
+    image: shobhitsarin/ms_issue
+    ports:
+    - 3001:3000
+    environment:
+    - ISSUE_HISTORY_API=http://ms_issuehistory:3000/issueHistory
+    depends_on: 
+    - ms_issuehistory
+
+
+
