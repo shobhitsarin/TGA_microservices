@@ -6,6 +6,8 @@ import swaggerOptions from "./config/swagger.js";
 import createError from "http-errors";
 import customenv from "custom-env";
 import issueHistoryRouter from "./routes/issueHistory.js";
+import cors from 'cors';
+
 customenv.env(
   process.env.NODE_ENV === "test" ? "development" : process.env.NODE_ENV
 );
@@ -18,6 +20,10 @@ app.disable("x-powered-by");
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+app.use(cors());
+
+
 issueHistoryRouter(app);
 
 // catch 404 and forward to error handler

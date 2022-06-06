@@ -21,6 +21,8 @@
     "testPathIgnorePatterns": ["./src/config","./src/utils"]
   },
   "dependencies": {
+        "cors": "^2.8.5",
+
     "cookie-parser": "~1.4.4",
     "cross-env": "^7.0.2",
     "custom-env": "^2.0.1",

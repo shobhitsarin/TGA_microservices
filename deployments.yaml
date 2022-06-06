@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: issue-deployment
+  namespace: kube-system
+  labels:
+    k8s-app: kube-dns
+    type: backend
+    app: issue-deployment
+spec:
+  template:
+    metadata:
+      name: issue-pod
+      labels:
+        app: issue
+        k8s-app: kube-dns
+    spec:
+      containers:
+        - name: issue-container
+          image: shobhitsarin/ms_issue:v1.6
+          env:
+            - name: ISSUE_HISTORY_API
+              value: http://issuehistory-service:3000/issueHistory
+            - name: LOLS_API
+              value: http://issuehistory-service:3000/lols
+            - name: LOLO_API
+              value: http://lolo-service/get
+            - name: DB_URI
+              value: mongodb+srv://shosarin:srNjacRIJh532xLm@issue_db/issues?retryWrites=true&w=majority
+  selector:
+    matchLabels:
+      app: issue
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: issuehistory-deployment
+  namespace: kube-system
+  labels:
+    k8s-app: kube-dns
+    type: backend
+spec:
+  template:
+    metadata:
+      name: issuehistory-pod
+      labels:
+        app: issuehistory
+        k8s-app: kube-dns
+    spec:
+      containers:
+        - name: issuehistory-container
+          image: shobhitsarin/ms_issuehistory:v1.6
+  selector:
+    matchLabels:
+      app: issuehistory
+  replicas: 1
