@@ -1,0 +1,33 @@
+version: 0.2
+phases:
+pre_build:
+commands:
+- echo Logging in to Amazon ECR...
+- aws --version
+- $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+- ISSUE_REPOSITORY_URI=283973683660.dkr.ecr.us-east-1.amazonaws.com/issue-tga
+- ISSUEHISTORY_REPOSITORY_URI=283973683660.dkr.ecr.us-east-1.amazonaws.com/issuehistory-tga
+- COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+- IMAGE_TAG=${COMMIT_HASH:=latest}
+build:
+commands:
+- echo Build started on `date`
+- echo Building the Docker image for Issue...
+- cd ms_issue
+- docker build -t $ISSUE_REPOSITORY_URI:latest .
+- docker tag $ISSUE_REPOSITORY_URI:latest $ISSUE_REPOSITORY_URI:$IMAGE_TAG
+- echo Build started on `date`
+- echo Building the Docker image for IssueHistory...
+- cd ..
+- cd ms_issuehistory
+- docker build -t $ISSUEHISTORY_REPOSITORY_URI:latest .
+- docker tag $ISSUEHISTORY_REPOSITORY_URI:latest $ISSUEHISTORY_REPOSITORY_URI:$IMAGE_TAG
+post_build:
+commands:
+- echo Build completed on `date`
+- echo Pushing the Docker image issue...
+- docker push $ISSUE_REPOSITORY_URI:latest
+- docker push $ISSUE_REPOSITORY_URI:$IMAGE_TAG
+- echo Pushing the Docker image issuehistory...
+- docker push $ISSUEHISTORY_REPOSITORY_URI:latest
+- docker push $ISSUEHISTORY_REPOSITORY_URI:$IMAGE_TAG
