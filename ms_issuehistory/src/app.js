@@ -18,6 +18,8 @@ app.disable("x-powered-by");
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.get("/readyz", (req, res) => res.status(200).json({ status: "ok" }));
+app.get("/livez", (req, res) => res.status(200).json({ status: "ok" }));
 issueHistoryRouter(app);
 
 // catch 404 and forward to error handler
