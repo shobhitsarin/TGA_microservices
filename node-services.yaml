@@ -5,11 +5,12 @@ metadata:
   labels:
     k8s-app: kube-dns
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: issue
   ports:
     - port: 3000
+      nodePort: 30001
       targetPort: 3000
 ---
 apiVersion: v1
@@ -19,9 +20,10 @@ metadata:
   labels:
     k8s-app: kube-dns
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: issuehistory
   ports:
     - port: 3000
       targetPort: 3000
+      nodePort: 30002

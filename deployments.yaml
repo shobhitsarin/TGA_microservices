@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: issue-deployment
-  namespace: kube-system
   labels:
     k8s-app: kube-dns
     type: backend
@@ -17,26 +16,37 @@ spec:
     spec:
       containers:
         - name: issue-container
-          image: shobhitsarin/ms_issue:v1.6
+          image: shobhitsarin/ms_issue:amd
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3000
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+            initialDelaySeconds: 10
+          livenessProbe:
+            failureThreshold: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+            initialDelaySeconds: 10
+            httpGet:
+              path: /livez
+              port: 3000
           env:
             - name: ISSUE_HISTORY_API
               value: http://issuehistory-service:3000/issueHistory
-            - name: LOLS_API
-              value: http://issuehistory-service:3000/lols
-            - name: LOLO_API
-              value: http://lolo-service/get
-            - name: DB_URI
-              value: mongodb+srv://shosarin:srNjacRIJh532xLm@issue_db/issues?retryWrites=true&w=majority
   selector:
     matchLabels:
       app: issue
-  replicas: 1
+  replicas: 3
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: issuehistory-deployment
-  namespace: kube-system
   labels:
     k8s-app: kube-dns
     type: backend
@@ -50,8 +60,26 @@ spec:
     spec:
       containers:
         - name: issuehistory-container
-          image: shobhitsarin/ms_issuehistory:v1.6
+          image: shobhitsarin/ms_issuehistory:amd
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3000
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+            initialDelaySeconds: 10
+          livenessProbe:
+            failureThreshold: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+            initialDelaySeconds: 10
+            httpGet:
+              path: /livez
+              port: 3000
   selector:
     matchLabels:
       app: issuehistory
-  replicas: 1
+  replicas: 3
